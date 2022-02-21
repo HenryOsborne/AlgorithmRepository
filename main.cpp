@@ -367,11 +367,14 @@ TreeNode *Convert(TreeNode *pRootOfTree) {
         return pRootOfTree;
 }
 
+bool IsBalanced_Solution(TreeNode *pRoot) {
+
+}
+
 int main() {
-    vector<int> pre = {10, 6, 4, 8, 14, 12, 16};
-    vector<int> in = {4, 6, 8, 10, 12, 14, 16};
+    vector<int> pre = {1, 2, 4, 5, 3, 6, 7};
+    vector<int> in = {4, 2, 5, 1, 6, 3, 7};
     TreeNode *t = buildTreePreIn(pre, in);
-
-
+    bool flag = IsBalanced_Solution(t);
     return 0;
 }
