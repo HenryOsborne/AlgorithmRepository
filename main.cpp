@@ -367,13 +367,66 @@ TreeNode *Convert(TreeNode *pRootOfTree) {
         return pRootOfTree;
 }
 
-bool IsBalanced_Solution(TreeNode *pRoot) {
-
+int Post_order(TreeNode *pRoot, int depth) {
+    int l = 0, r = 0;
+    if (pRoot->left) {
+        l = Post_order(pRoot->left, depth + 1);
+    }
+    if (pRoot->right) {
+        r = Post_order(pRoot->right, depth + 1);
+    }
+    if (pRoot->left == nullptr && pRoot->right == nullptr)
+        return depth;
+    else if (pRoot->left != nullptr && pRoot->right == nullptr) {
+        if (abs(l - depth) > 1)
+            return -1;
+        else
+            return l;
+    } else if (pRoot->left == nullptr && pRoot->right != nullptr) {
+        if (abs(r - depth) > 1)
+            return -1;
+        else
+            return r;
+    } else if (l == -1 || r == -1 || abs(l - r) > 1)
+        return -1;
+    else
+        return l > r ? l : r;
 }
 
+// 后序遍历二叉树
+bool IsBalanced_Solution(TreeNode *pRoot) {
+    if (pRoot == nullptr)
+        return true;
+    else {
+        int n = Post_order(pRoot, 1);
+        if (n != -1)
+            return true;
+        else
+            return false;
+    }
+}
+
+struct TreeLinkNode {
+    int val;
+    struct TreeLinkNode *left;
+    struct TreeLinkNode *right;
+    struct TreeLinkNode *next;
+
+    explicit
+    TreeLinkNode(int x) : val(x), left(nullptr), right(nullptr), next(nullptr) {
+    }
+};
+
+
 int main() {
-    vector<int> pre = {1, 2, 4, 5, 3, 6, 7};
-    vector<int> in = {4, 2, 5, 1, 6, 3, 7};
+//    vector<int> pre = {1, 2, 3, 4, 5};
+//    vector<int> in = {5, 4, 3, 2, 1};
+//    vector<int> pre = {1, 2, 4, 5, 7, 3, 6};
+//    vector<int> in = {4, 2, 7, 5, 1, 3, 6};
+//    vector<int> pre = {1, 2, 4, 6, 3, 5};
+//    vector<int> in = {6, 4, 2, 1, 3, 5};
+    vector<int> pre = {1, 2, 4, 5, 6, 3};
+    vector<int> in = {4, 2, 6, 5, 1, 3};
     TreeNode *t = buildTreePreIn(pre, in);
     bool flag = IsBalanced_Solution(t);
     return 0;
