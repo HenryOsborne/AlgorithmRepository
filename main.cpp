@@ -417,17 +417,134 @@ struct TreeLinkNode {
     }
 };
 
+bool Symmetr(TreeNode *pLeft, TreeNode *pRight) {
+    if (!pLeft && !pRight)
+        return true;
+    if (!pLeft || !pRight)
+        return false;
+    return pLeft->val == pRight->val && Symmetr(pLeft->left, pRight->right) &&
+           Symmetr(pLeft->right, pRight->left);
+}
+
+bool isSymmetrical(TreeNode *pRoot) {
+    return Symmetr(pRoot->left, pRoot->right);
+}
+
+
+vector<vector<int>> PrintLevel(TreeNode *pRoot) {
+    vector<vector<int>> output;
+    if (pRoot == nullptr)
+        return output;
+    queue<pair<TreeNode *, int>> qu;
+    vector<pair<TreeNode *, int>> data;
+    TreeNode *p = pRoot;
+    pair<TreeNode *, int> tmp;
+    qu.push(pair<TreeNode *, int>(p, 1));
+    while (!qu.empty()) {
+        tmp = qu.front();
+        qu.pop();
+        data.push_back(tmp);
+        if (tmp.first->left != nullptr)
+            qu.push(pair<TreeNode *, int>(tmp.first->left, tmp.second + 1));
+        if (tmp.first->right != nullptr)
+            qu.push(pair<TreeNode *, int>(tmp.first->right, tmp.second + 1));
+    }
+    vector<int> lvl_order;
+    int level = 1;
+    for (auto &i: data) {
+        if (i.second == level) {
+            lvl_order.push_back(i.first->val);
+        } else {
+            output.push_back(lvl_order);
+            lvl_order.clear();
+            level = i.second;
+            lvl_order.push_back(i.first->val);
+        }
+    }
+    if (!lvl_order.empty()) {
+        output.push_back(lvl_order);
+    }
+    return output;
+}
+
+// ------------------------------------------------------------------
+// 二叉树中和为某一值的路径(三)
+//描述
+//给定一个二叉树root和一个整数值 sum ，求该树有多少路径的的节点值之和等于 sum 。
+//1.该题路径定义不需要从根节点开始，也不需要在叶子节点结束，但是一定是从父亲节点往下到孩子节点
+//2.总节点数目为n
+//3.保证最后返回的路径个数在整形范围内
+int num_path = 0;
+
+void FFF(TreeNode *root, int sum) {
+    if (root == nullptr)return;
+    sum -= root->val;
+    if (sum == 0)num_path++;
+    FFF(root->left, sum);
+    FFF(root->right, sum);
+}
+
+int FindPath(TreeNode *root, int sum) {
+    // write code here
+    if (!root)
+        return num_path;
+    else {
+        FFF(root, sum);
+        FindPath(root->left, sum);
+        FindPath(root->right, sum);
+        return num_path;
+    }
+}
+
+// ------------------------------------------------------------------
+//在二叉树中找到两个节点的最近公共祖先
+//描述
+//给定一棵二叉树(保证非空)以及这棵树上的两个节点对应的val值 o1 和 o2，请找到 o1 和 o2 的最近公共祖先节点。
+//数据范围：树上节点数满足1≤n≤10^5
+//节点值val满足区间 [0,n)
+//要求：时间复杂度 O(n)
+//注：本题保证二叉树中每个节点的val值均不相同。
+vector<int> tmp;
+
+void Ancestor(TreeNode *root, int target, vector<int> p) {
+    if (root == nullptr)
+        return;
+    else if (root->val == target) {
+        p.push_back(target);
+        tmp = p;
+        return;
+    }
+    p.push_back(root->val);
+    Ancestor(root->left, target, p);
+    Ancestor(root->right, target, p);
+}
+
+
+int lowestCommonAncestor(TreeNode *root, int o1, int o2) {
+    // write code here
+    vector<int> o1_path, o2_path;
+    Ancestor(root, o1, {});
+    o1_path = tmp;
+    Ancestor(root, o2, {});
+    o2_path = tmp;
+
+    int a=0;
+    set<int> s;
+    for (int i: o1_path) {
+        s.insert(i);
+    }
+    for (int i: o2_path) {
+        if (s.find(i) != s.end())
+            a=i;
+    }
+    return a;
+}
+// ------------------------------------------------------------------
 
 int main() {
-//    vector<int> pre = {1, 2, 3, 4, 5};
-//    vector<int> in = {5, 4, 3, 2, 1};
-//    vector<int> pre = {1, 2, 4, 5, 7, 3, 6};
-//    vector<int> in = {4, 2, 7, 5, 1, 3, 6};
-//    vector<int> pre = {1, 2, 4, 6, 3, 5};
-//    vector<int> in = {6, 4, 2, 1, 3, 5};
-    vector<int> pre = {1, 2, 4, 5, 6, 3};
-    vector<int> in = {4, 2, 6, 5, 1, 3};
+    vector<int> pre = {3, 5, 6, 2, 7, 4, 1, 0, 8};
+    vector<int> in = {6, 5, 7, 2, 4, 3, 0, 1, 8};
     TreeNode *t = buildTreePreIn(pre, in);
-    bool flag = IsBalanced_Solution(t);
+    int a = lowestCommonAncestor(t, 5, 1);
     return 0;
 }
