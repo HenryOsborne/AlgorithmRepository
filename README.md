@@ -2,6 +2,4 @@
 
 [原文链接](https://www.nowcoder.com/ta/coding-interviews)
 
-本仓库仅记录代码，并没有记录笔记。
-
-笔记在这里[请点击](https://www.notion.so/henryosborne/)
+本仓库仅记录代码，刷题笔记[请点击](https://www.notion.so/henryosborne/)
